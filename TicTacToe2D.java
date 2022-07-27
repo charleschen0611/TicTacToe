@@ -51,7 +51,8 @@ public class TicTacToe2D
 				symbols = new String[numOfPlayers];
 				symbols[0] = "X";
 				symbols[1] = "O";
-				int i = 2;
+				int i = 2;	//Initial numOfPlayers
+				
 				//Assign capital letters to players other than the first two, if existed
 				if(numOfPlayers > 2)
 				{
@@ -76,7 +77,7 @@ public class TicTacToe2D
 						//System.out.println(symbols[i]+"!!!");
 					}
 				}
-				i++;
+
 				// Read the moves into moves[][]
 				moves = new String[size][size];
 				
@@ -90,7 +91,6 @@ public class TicTacToe2D
 					{
 						moves[e][f] = temp1[f];
 					}
-					System.out.println("\n");
 					e++;
 					}
 				
@@ -112,8 +112,8 @@ public class TicTacToe2D
 			{
 				System.out.println();
 				//Ask how many players
-				boolean whileCondition1 = false;
-				while(!whileCondition1)
+				boolean wcForNoPs = false;
+				while(!wcForNoPs)
 				{
 					System.out.print("Please enter the number of players that are playing: ");
 					while(!scan1.hasNextInt())
@@ -121,7 +121,6 @@ public class TicTacToe2D
 						System.out.print("Invalid number of players! Please re-enter the number of players: ");
 						choice = scan1.next();
 					}
-					
 					numOfPlayers = Integer.parseInt(scan1.next());
 			
 					//check if the number is greater than 26
@@ -135,10 +134,9 @@ public class TicTacToe2D
 					}
 					else
 					{
-						whileCondition1 = true;
+						wcForNoPs = true;
 					}
 				}
-				
 				//create symbols for players
 				symbols = new String[numOfPlayers];
 				symbols[0] = "X";
@@ -147,37 +145,37 @@ public class TicTacToe2D
 				//Assign capital letters to players other than the first two, if existed
 				if(numOfPlayers > 2)
 				{
-					String temp="";
+					
 					//Convert and assign the letters
+					int j = 0;		//to avoid the reselection of 'X' and 'O'
 					for(int i = 2; i < numOfPlayers; i++)
 					{	
-						temp += i;
-						byte [] b = temp.getBytes();
-						int j = 0;		//to avoid the reselection of 'X' and 'O'
-						if((char)(b[0]+15)!='X'||(char)(b[0]+15)!='O')
+						char currentLetter = (char)((int)'A'+ i + j -2);
+						if(currentLetter != 'X' && currentLetter != 'O')
 						{
-							symbols[i] = String.valueOf((char)(b[0]+15+j));
+							symbols[i] = "" + currentLetter;
+							System.out.println(symbols[i] + "!");
 						}
 						else		//the next number to be assigned is 'X' or 'O'
 						{
 							j++;
-							symbols[i] = String.valueOf((char)(b[0]+15+j));
+							symbols[i] = "" + (char)((int)currentLetter + 1);
+							System.out.println(symbols[i]);
 						}
-						temp = "";
+						
 						//System.out.println(symbols[i]+"!!!");
 					}
 				}
 				//prompt for the size of the board
-				boolean whileCondition2 = false;
-		
-				while(!whileCondition2)
+				boolean wcForSize = false;
+				while(!wcForSize)
 				{
 					System.out.print("Please enter the size of the board: ");
 					
 					while(!scan1.hasNextInt())
 					{
-						System.out.print("Invalid size! Please re-enter the size(>2) of the board: ");
-						choice = scan1.next();
+						System.out.print("Entered size was not integer! Please re-enter the size of the board: ");
+						choice = scan1.next();	// dump the current input
 					}
 					size = Integer.parseInt(scan1.next());
 					
@@ -188,7 +186,7 @@ public class TicTacToe2D
 					}
 					else if(size > 1 && size <= 19)
 					{
-						whileCondition2 = true;	
+						wcForSize = true;	
 					}
 					else
 					{
@@ -196,9 +194,8 @@ public class TicTacToe2D
 					}
 				}
 				//prompt the user for the winning sequence
-				boolean whileCondition3 = false;
-				
-				while(!whileCondition3)
+				boolean wcForWS = false;
+				while(!wcForWS)
 				{
 					System.out.print("Please enter the winning sequence of the game: ");
 
@@ -219,14 +216,11 @@ public class TicTacToe2D
 					}
 					else
 					{
-						whileCondition3 = true;
+						wcForWS = true;
 					}
 				}
-				//print the board
-				printBoard(size);
-				
 				moves = new String[size][size];
-				//initialize the moves[]
+				//initialize the moves[] to all "0"s
 				for(int g = 0; g < size;g++)
 				{
 					for(int h =0; h < size; h++)
@@ -234,90 +228,106 @@ public class TicTacToe2D
 						moves[g][h] = "0";
 					}
 				}
-			}		
-	//Ask for moves from both players
-			Scanner scan2 = new Scanner(System.in);
+				//print the board
+				printBoard(size);
+			} // End of begining part of the game
+			
+			//Ask for moves from both players
 			int x = 0;
 			int y = 0;
 			boolean endWhile = false;
-			String temp = "";
 			
 			int totalSize = size*size;		//counter for the game
 			while(!endWhile)
 			{
 				for(int l = nextPlayer; l < numOfPlayers; l++)
 				{
-					updateBoard(size, moves);
+					// Check if all spaces are taken
 					if(totalSize>0)
 					{
 						System.out.print("Player "+(l+1) + ", please enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
-						// Non-coordinate input
-						if(!scan2.hasNextInt())
+						
+						// Check if the input is seperated by only one space
+						String [] input = scan1.nextLine().split(" ");
+						
+						boolean wcForValidInput = false;
+						
+						while(!wcForValidInput)
 						{
-							temp = scan2.next();
-							// Save & Quit the game
-							if(temp.equals("Quit"))
+							while(input.length != 2 )
 							{
-								quit(numOfPlayers, size, winningSequence, moves);
+								if(input[0].equals("Quit"))
+								{
+									quit(numOfPlayers, size, winningSequence, moves);
+								}
+								else
+								{
+									System.out.print("Invalid input! Please try again.\nPlease enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
+									input = scan1.nextLine().split(" ");
+								}
 							}
-							// Invalid input
+							// And if the two inputs are both integer 
+							if(! input[0].matches("\\d+") || ! input[1].matches("\\d+"))
+							{
+								System.out.print("Invalid input! Please try again.\nPlease enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
+								input = scan1.nextLine().split(" ");
+							}
 							else
-							{ 
-								System.out.println("Invalid input for row number! Please try again.");
-								System.out.print("Player "+(l+1) + ", please enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
+							{
+								// The inputs are now two integers
+								x = Integer.parseInt(input[0])-1;
+								y = Integer.parseInt(input[1])-1;
+								wcForValidInput = true;
 							}
 						}
-						// first input is valid
-						else 
-						{
-							temp = scan2.next();
-							x = Integer.parseInt(temp)-1;
-							while(!scan2.hasNextInt())
-							{
-								System.out.println("Invalid input for column number! Please try again.");
-								System.out.print("Player "+(l+1) + ", please enter column numbers for your next move, or enter \"Quit\" to save and quit the game: ");
-							}
-							temp = scan2.next();
-							
-							y = Integer.parseInt(temp)-1;
-							
+						boolean wcForInput = false;
+						
+						// Check the validity of the inputs
+						while(!wcForInput)
+						{	
 							boolean whileCondition5 = false;	//Check if the input row & column number are valid
 							// Check if the input is larger than the board size
-							while(!whileCondition5)
+							while(!whileCondition5 && !wcForInput)
 							{
 								if(x >= size)
 								{
 									System.out.print("Row number too large. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
-									temp = scan2.next();
+									/*temp = scan2.next();
 									x = Integer.parseInt(temp) - 1;
 									temp = scan2.next();
-									y = Integer.parseInt(temp) - 1;
+									y = Integer.parseInt(temp) - 1;*/
+									whileCondition5 = true;
+									wcForInput = true;
 								}
 								else if(y >= size)
 								{
 									System.out.print("Column number too large. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
-									temp = scan2.next();
+									/*temp = scan2.next();
 									x = Integer.parseInt(temp) - 1;
 									temp = scan2.next();
-									y = Integer.parseInt(temp) - 1;
-									System.out.println(x+" !!! "+y);
+									y = Integer.parseInt(temp) - 1;*/
+									whileCondition5 = true;
+									wcForInput = true;
 								}
 								else 
 								{
-									whileCondition5 = true;
+									
+									wcForInput = true;
 								}
 							}
+							
 							// Make sure the called space is not occupyoed by other piece
 							boolean whileCondition4 = false;
-							
-							while(!whileCondition4)
+							String temp;
+							// If the input coordinate(s) too large, skip the following while
+							while(!whileCondition4 && !whileCondition5 && wcForInput)
 							{
 								if(!moves[x][y].equals("0"))
 								{
 									System.out.print("That space has been taken. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
-									temp = scan2.next();
+									temp = scan1.next();
 									x = Integer.parseInt(temp) - 1;
-									temp = scan2.next();
+									temp = scan1.next();
 									y = Integer.parseInt(temp) - 1;
 								}
 								else
@@ -326,27 +336,31 @@ public class TicTacToe2D
 									whileCondition4 = true;
 								}
 							}
-							updateBoard(size, moves);
-							
-							//check if the current player wins
-							if(checkWinning(moves, winningSequence,size,symbols[l]))
+							// input is valid
+							if(whileCondition4)
 							{
-								System.out.print("Player "+(l+1)+" wins!!"+" \nPress \"N\" to start the next game, or \"Q\" to quit the game: ");
-								String temp1 = scan1.next();
-								System.out.println("");
-								if(temp1.equals("N"))
+								updateBoard(size, moves);
+								
+								//check if the current player wins
+								if(checkWinning(moves, winningSequence,size,symbols[l]))
 								{
-									main(args);
+									System.out.print("Player "+(l+1)+" wins!!"+" \nPress \"N\" to start the next game, or \"Q\" to quit the game: ");
+									String temp1 = scan1.next();
+									System.out.println("");
+									if(temp1.equals("N"))
+									{
+										main(args);
+									}
+									else if(temp1.equals("Q"))
+									{
+										System.out.println("See you next time!");
+										System.exit(0);
+									}
+									endWhile = true;	// To be deleted
+									l = numOfPlayers;	// To be deleted
 								}
-								else if(temp1.equals("Q"))
-								{
-									System.out.println("See you next time!");
-									System.exit(0);
-								}
-								endWhile = true;
-								l = numOfPlayers;
 							}
-						}
+						}	// End of input-asking while
 					totalSize--;
 					}
 					else
@@ -360,11 +374,12 @@ public class TicTacToe2D
 						}
 					}
 				}
+				nextPlayer = 0;	//Remainder of players have played. Now full round begins.
 			}
-			}//End of else if
+			}//End of Resume Game/else if
 			else
 			{
-				System.out.println("Wrong input! Please try again.\n");
+				System.out.println("\nWrong input! Please try again.\n");
 				main(args);
 			}
 	}	
@@ -373,9 +388,10 @@ public class TicTacToe2D
 		Byte [] b = new Byte[2048];
 		System.out.print("Please enter the name of the txt file you wish to store the game in, or \"quit\" to quit directly: ");
 		Scanner scan1 = new Scanner(System.in);
-		boolean whileCondition6 = false;
+		boolean wcForQuit = false;
 		String response = scan1.nextLine();
-		while(!whileCondition6)
+		
+		while(!wcForQuit)
 		{
 			if(response.equals("Quit") || response.equals("quit"))
 			{
@@ -400,18 +416,14 @@ public class TicTacToe2D
 				writeFile = new FileWriter(ifile);
 
 				writeFile.write(numOfPlayers + "\n");
-				System.out.println("Writing numOfPlayers " + numOfPlayers);
 				writeFile.write(size + "\n");
-				System.out.println("Writing size "+size);
 				writeFile.write(winningSequence + "\n");
-				System.out.println("Writing winningSequence " + winningSequence);
 				
 				for(int f = 0; f < moves.length; f++)
 				{
 					for(int g = 0; g < moves[0].length - 1; g++)
 					{
 						writeFile.write(moves[f][g] + ",");
-						System.out.println("Writing moves["+f+"][" +g+"]: "+moves[f][g]);
 					}
 					
 					writeFile.write(moves[f][moves[0].length - 1]);
@@ -506,30 +518,6 @@ public class TicTacToe2D
 				/*
 				 * Check for winning in all left to right diagonals 
 				*/
-				if(i + winningSequence <= size && j > winningSequence)	
-				{
-					// Begins the winning sequence checking
-					if(moves[i][j].equals(symbol))	
-					{
-						num2 =1;
-						// check if the space [i][j] is the begining of a winning sequence
-						for(int m = 1; m < winningSequence; m++)
-						{
-							if(moves[i+m][j-m].equals(symbol))
-							{
-								num2++;
-							}
-						}
-						// Check if the current sequence is long enough
-						if(num2 >= winningSequence)
-						{
-							won = true;
-						}
-					}
-				}
-				/*
-				 * Check for winning in all right to left diagonals 
-				*/
 				if(i + winningSequence <= size && j + winningSequence <= size)	
 				{
 					// Begins the winning sequence checking
@@ -551,11 +539,38 @@ public class TicTacToe2D
 						}
 					}
 				}
+				/*
+				 * Check for winning in all right to left diagonals 
+				*/
+				if(i + winningSequence <= size && j + 1 >= winningSequence)	
+				{
+					// Begins the winning sequence checking
+					if(moves[i][j].equals(symbol))	
+					{
+						num3 =1;
+						// check if the space [i][j] is the begining of a winning sequence
+						for(int m = 1; m < winningSequence; m++)
+						{
+							if(moves[i+m][j-m].equals(symbol))
+							{
+								num3++;
+							}
+						}
+						// Check if the current sequence is long enough
+						if(num3 >= winningSequence)
+						{
+							won = true;
+						}
+					}
+				}
 			}
 		}
 		//reset the counter
 		num0 = 0;
 		num1 = 0;
+		num2 = 0;
+		num3 = 0;
+		
 		return won;
 	}
 	//initialize the board
