@@ -248,38 +248,30 @@ public class TicTacToe2D
 						System.out.print("Player "+(l+1) + ", please enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
 						
 						// Check if the input is seperated by only one space
-						String [] input = scan1.nextLine().split(" ");
-						
+//						String [] input = scan1.nextLine().split(" ");
+//						System.out.println("Input: "+input[0]);
 						boolean wcForValidInput = false;
 						
-						while(!wcForValidInput)
-						{
-							while(input.length != 2 )
-							{
-								if(input[0].equals("Quit"))
-								{
-									quit(numOfPlayers, size, winningSequence, moves);
-								}
-								else
-								{
-									System.out.print("Invalid input! Please try again.\nPlease enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
-									input = scan1.nextLine().split(" ");
-								}
-							}
-							// And if the two inputs are both integer 
-							if(! input[0].matches("\\d+") || ! input[1].matches("\\d+"))
-							{
-								System.out.print("Invalid input! Please try again.\nPlease enter the row and column numbers for your next move, \nseperate by a space, or enter \"Quit\" to save and quit the game: ");
-								input = scan1.nextLine().split(" ");
-							}
-							else
-							{
-								// The inputs are now two integers
-								x = Integer.parseInt(input[0])-1;
-								y = Integer.parseInt(input[1])-1;
-								wcForValidInput = true;
-							}
+						while (!wcForValidInput) {
+						    String inputLine = scan1.nextLine().trim(); // Trim leading and trailing spaces
+						    String[] input = inputLine.split(" ");
+
+						    if (input.length != 2) {
+						        if (inputLine.equals("Quit")) {
+						            quit(numOfPlayers, size, winningSequence, moves);
+						        } else {
+						            System.out.println("Invalid input! Please try again.");
+						        }
+						    } else if (!input[0].matches("\\d+") || !input[1].matches("\\d+")) {
+						        System.out.println("Invalid input! Please enter two integers.");
+						    } else {
+						        x = Integer.parseInt(input[0]) - 1;
+						        y = Integer.parseInt(input[1]) - 1;
+						        wcForValidInput = true;
+						    }
 						}
+						
+						
 						boolean wcForInput = false;
 						
 						// Check the validity of the inputs
