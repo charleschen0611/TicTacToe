@@ -15,7 +15,7 @@ public class TicTacToe
 		String [] symbols;
 		String [] moves;
 		//prompt and load game if answer is yes, resume game from file
-		System.out.print("If you would like to resume a game, please enter \"Resume Game\"; If you would like to start a new game, please enter \"New Game\", or \"Quit\" to quit the game: ");
+		System.out.print("If you would like to resume a game, please enter \"Resume Game\"; \nIf you would like to start a new game, please enter \"New Game\", or \"Quit\" to quit the game: ");
 		String choice = scan1.nextLine();
 		
 		if(choice.charAt(0)=='Q'||choice.charAt(0)=='q')
@@ -46,7 +46,6 @@ public class TicTacToe
                 {
                     
                     moves[i] = reader.readLine();
-                    //System.out.println(moves[i]+"!!!!!");
                 }
 
 				//Assign symbols to players
@@ -75,7 +74,6 @@ public class TicTacToe
 							symbols[i] = String.valueOf((char)(b[0]+15+j));
 						}
 						temp1 = "";
-						//System.out.println(symbols[i]+"!!!");
 					}
 				}
 				
@@ -137,7 +135,7 @@ public class TicTacToe
 							symbols[i] = String.valueOf((char)(b[0]+15+j));
 						}
 						temp = "";
-						//System.out.println(symbols[i]+"!!!");
+						
 					}
 				}
 		
@@ -158,7 +156,7 @@ public class TicTacToe
 						System.out.println("Invalid board size! Please try again.");
 					}
 				}
-			
+				
 			
 		//prompt the user for the winning sequence
 		boolean whileCondition3 = false;
@@ -175,6 +173,10 @@ public class TicTacToe
 			{
 				System.out.println("Winning not possible! Please enter a smaller winning sequence.");	
 			}
+			else if(winningSequence <= 0)
+			{
+				System.out.println("Winning sequence selected is too small. Please enter a bigger winning sequence.");
+			}
 			else
 			{
 				whileCondition3 = true;
@@ -188,12 +190,8 @@ public class TicTacToe
 				moves[g] = " ";
 			}
 //print the board
-		/* if(firstTimePlaying==1)
-		{ */
-			printBoard(size, symbols);
 		
-			
-		//}	
+			printBoard(size, symbols);
 		
 		}
 	
@@ -245,47 +243,52 @@ public class TicTacToe
                      
 					fos.close();
 					totalSize--;
+					
+					System.out.println("See you next time!");
 					System.exit(0);
 				}
 				
 				x = (int)temp.charAt(0)-48;
 				y = (int)temp.charAt(2)-48;
 				
-				//System.out.println(x+" !!! "+y);
-				
 				boolean whileCondition4 = false;
 				
 				while(!whileCondition4)
 				{
-					if(!moves[size*(x-1)+(y-1)].equals(" "))
+					if(x > size || y > size || x <= 0 || y <= 0 )
 					{
-						System.out.print("That space has been taken. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
+						System.out.print("Invalid input. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
 						temp = scan2.nextLine();
 						x = (int)temp.charAt(0)-48;
 						y = (int)temp.charAt(2)-48;
 					}
 					else
 					{
-						moves[size*(x-1)+(y-1)] = symbols[l]; 
+						boolean whileCondition5 = false;
+						
+						while(!whileCondition5)
+						{
+							if(!moves[size*(x-1)+(y-1)].equals(" "))
+							{
+								System.out.print("That space has been taken. Please try again.\nEnter the row and column numbers for your next move, seperate by a space: ");
+								temp = scan2.nextLine();
+								x = (int)temp.charAt(0)-48;
+								y = (int)temp.charAt(2)-48;
+							}
+							else
+							{
+								moves[size*(x-1)+(y-1)] = symbols[l]; 
+								whileCondition5 = true;
+							}
+						}
 						whileCondition4 = true;
 					}
 				}
-				//System.out.println("Test0: "+(4*(y-1)+(x-1))+"!!!!!");
-				/*
-				//Test1
-				for(int g = 0; g < size*size;g++)
-				{
-					System.out.println(g+moves[g]+"!");
-				}
-				*/
 				
 				//update the board
 				updateBoard(size, moves);
 				
-				
-				
 				//check if the game becomes unwinnable
-				//System.out.println(symbols.length+"!!");
 				
 				if(!checkWinnable(moves, winningSequence,size,symbols[l]))
 				{
@@ -324,7 +327,6 @@ public class TicTacToe
 					l = numOfPlayers;
 				}
 				totalSize--;
-				//System.out.println("Total size reduced to "+totalSize);
 				}
 				else
 				{
@@ -335,15 +337,13 @@ public class TicTacToe
 				}
 			}
 		}
-		}//End of else if
+		}
 		else
 		{
 			System.out.println("Wrong input! Please try again.");
 			//String [] args0 = new String[1];
 			main(args);
 		}
-		//System.out.println("End Game~~");
-		
 	}
 
 	
@@ -384,16 +384,7 @@ public class TicTacToe
 			w++;
 			r=0;
 		}
-		/*
-		//Test
-		for(int l = 0; l< size; l++)
-		{
-			for(int x=0; x<size; x++)
-			{	
-				System.out.println(updated2DMoves[l][x]);
-			}
-		}
-		*/
+		
 		for(int i = 0; i< size; i++)		//column
 		{
 			for(int j = 0; j< size; j++)	//row
@@ -428,17 +419,6 @@ public class TicTacToe
 							//System.out.println("num1(right diagonal) ++, "+num1);
 						}
 					}
-					//rows
-					
-					
-					/*
-					 * 
-					 * 写到这了！！！num_1_1什么的还要再改！
-					 * 
-					 * */
-					
-					
-					
 					
 					if(updated2DMoves[i][j]!=" " && updated2DMoves[i][j].equals(symbol))
 					{
@@ -471,21 +451,13 @@ public class TicTacToe
 							}
 							d++;
 						}
-						
-						
-						
-						
-						//System.out.println("num2["+i+"] ++, "+num2[i]);
-					}
+				}
 					//columns
 					if(updated2DMoves[j][i]!=null && updated2DMoves[j][i].equals(symbol))
 					{
 						num3_1[j]++;
 						//System.out.println("num3["+i+"] ++, "+num3[i]);
 					}
-					
-					
-				
 				
 			}
 		}
@@ -592,28 +564,17 @@ public class TicTacToe
 			w++;
 			r=0;
 		}
-		/*
-		//Test
-		for(int l = 0; l< size; l++)
-		{
-			for(int x=0; x<size; x++)
-			{	
-				System.out.println(updated2DMoves[l][x]);
-			}
-		}
-		*/
+		
 		for(int i = 0; i< size; i++)		//column
 		{
 			for(int j = 0; j< size; j++)	//row
 			{
-				
 					//left diagonal
 					if(i==j)
 					{
 						if(updated2DMoves[i][j]!=null && updated2DMoves[i][j].equals(symbol))
 						{
 							num0++;
-							//System.out.println("num0(left diagonal) ++, "+num0);
 						}
 					}
 					//right diagonal
@@ -622,20 +583,17 @@ public class TicTacToe
 						if(updated2DMoves[i][size-1-i]!=null && updated2DMoves[i][size-1-i].equals(symbol))
 						{
 							num1++;
-							//System.out.println("num1(right diagonal) ++, "+num1);
 						}
 					}
 					//rows
 					if(updated2DMoves[i][j]!=null && updated2DMoves[i][j].equals(symbol))
 					{
 						num2[i]++;
-						//System.out.println("num2["+i+"] ++, "+num2[i]);
 					}
 					//columns
 					if(updated2DMoves[j][i]!=null && updated2DMoves[j][i].equals(symbol))
 					{
 						num3[i]++;
-						//System.out.println("num3["+i+"] ++, "+num3[i]);
 					}
 				
 				
@@ -664,85 +622,8 @@ public class TicTacToe
 			}
 			return false;
 		}
-		/*
-		for(int c = 0; c < size; c++)		//different rows
-		{
-			//System.out.println("Test0: "+ c +"!");
-			//check left diagonals
-			if(moves[(size+1)*c].equals(symbol))
-			{
-				num0++;
-				System.out.println("Test1: "+ c +"!!");
-			}
-			//check right diagonal
-			if(moves[((size-1)*(c+1))].equals(symbol))
-			{
-				num1++;
-				System.out.println("Test2: "+ c +"!!!");
-			}
-			
-			//check rows
-			
-			if((moves[size*c].equals(symbol)) && (moves[size*c+1].equals(symbol)) && (moves[size*c+2].equals(symbol)))
-			{
-				num2[c]++;
-				//System.out.println("Test0: "+ c +"!!!!");
-			}
-			
-			int d = 0;
-			for(int e = 0; e < size; e++)
-			{
-				if(moves[size*c+e].equals(symbol))
-				{
-					num2[e]++;
-					System.out.println("Test3: "+ c +"!!!");
-				}
-			}
-			
-			//check columns
-			
-			if((moves[c].equals(symbol)) && (moves[c+3].equals(symbol)) && (moves[c+6].equals(symbol)))
-			{
-				num3[c]++;
-				//System.out.println("Test0: "+ c +"!!!!!");
-			}
-			
-			for(int f = 0; f < size; f++)
-			{
-				if(moves[f+f*size].equals(symbol))
-				{
-					System.out.println("Test4: "+ c +"!!!");
-					num3[f]++;
-				}
-			}
-		}*/
-		
-		/*
-		//update condition for rows
-		for(int i = 0; i< num2.length;i++)
-		{
-			if(num2[i] >= winningSequence)
-			{
-				
-				return true;
-			}
 		}
-		//update condition for columns
-				for(int i = 0; i< num3.length;i++)
-				{
-					if(num3[i] >= winningSequence)
-					{
-						return true;
-					}
-				}
-		if(num0 >= winningSequence || num1 >= winningSequence)
-		{
-			return true;
-		}
-		*/
 		
-		//return false;
-	}
 	
 	//initialize the board
 	public static void printBoard(int size, String[] symbols)		//回头把symbols去掉
@@ -796,10 +677,7 @@ public class TicTacToe
 				for(int i = 0;i < size*size; i++)
 				{
 					symbolPlaces[i]=moves[i];
-					//System.out.println(symbolPlaces[i]);
 				}
-				
-				
 				//line 1
 				System.out.print("    ");
 				for(int i = 1; i <= size; i++)
